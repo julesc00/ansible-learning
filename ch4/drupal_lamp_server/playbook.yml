@@ -117,7 +117,7 @@
         mv /tmp/composer.phar /usr/local/bin/composer
         creates=/usr/local/bin/composer
 
-    - name: "Check out drush 8.x branch"
+    - name: "Git check out drush 8.x branch"
       git:
         repo: https://github.com/drush-ops/drush.git
         version: 8.x
@@ -134,3 +134,18 @@
         src: /opt/drush/drush
         dest: /usr/local/bin/drush
         state: link
+
+    - name: "Git check out Drupal Core to the Apache docroot."
+      git:
+        repo: https://git.drupal.org/project/drupal.git
+        version: "{{ drupal_core_version }}"
+        dest: "{{ drupal_core_path  }}"
+      register: git_checkout
+
+    - name: "Ensure Drupal codebase is owned by www-data."
+      file:
+        path: "{{ drupal_core_path }}"
+        owner: www-data
+        group: www-data
+        recurse: true
+      when: git_checkout.changed | bool
