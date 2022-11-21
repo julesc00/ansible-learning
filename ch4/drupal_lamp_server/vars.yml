@@ -7,3 +7,6 @@ drupal_core_path: "/var/www./drupal-{{ drupal_core_path }}-dev"
 
 # The resulting domain will be [domain].test (with .test appended).
 domain: "drupal"
+
+# Drupal site name.
+drupal_site_name: "Drupal Test"

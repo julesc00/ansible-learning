@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: true
+
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: "Update apt cache if needed."
+      apt: update_cache=true cache_valid_time=3600
+
+  tasks:
+    - name: "Install Java."
+      apt: name=openjdk-8-jdk state=present
+
+    - name: "Download Solr."
+      get_url:
+        url: "https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz"
+        dest: "{{ download_dir }}/solr-{{ solr_version }}.tgz"
+        checksum: "{{ solr_checksum }}"
+
+    - name: "Expand Solr"

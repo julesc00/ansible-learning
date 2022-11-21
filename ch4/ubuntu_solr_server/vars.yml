@@ -1,0 +1,5 @@
+
+download_dir: /tmp
+solr_dir: /opt/solr
+solr_version: 8.11.2
+solr_checksum: 996304097dccbc0939a469e3ecc0286729db50430bc15de29edc66c859b560d8b4f47d9f4cf8d4793dae1c14e9202912b060ef2\19c1a5bde24132de383e0a59d
