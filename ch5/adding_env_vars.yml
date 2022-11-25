@@ -1,6 +1,12 @@
 ---
 - hosts: all
 
+  vars:
+    proxy_vars:
+      http_proxy: http://example-proxy:80/
+      https_proxy: https://example-proxy:443/
+      # [etc...]
+
   tasks:
     - name: "Add an environment variable to the remote user's shell."
       lineinfile: "dest=~/.bash_profile regexp=^ENV_VAR= line=ENV_VAR=value"
@@ -14,3 +20,15 @@
 
     - name: "Add a global environment variable."
       lineinfile: "dest=/etc/environment regexp=^ENV_VAR= line=ENV_VAR=value"
+
+    # Set environment for just one play using 'environment' option. This could be cumbersome if
+    # it has to be done in several tasks.
+    - name: "Download a file, using example-proxy as a proxy."
+      get_url: url=http://www.example.com/file.tar.gz dest=~/Downloads/
+      environment:
+        http_proxy: http://example-proxy:80/
+
+    # Using variables
+    - name: "Same as the task above for downloading a file, using a proxy."
+      get_url: url=http://www.example.com/file.tar.gz dest=~/Download/
+      environment: proxy_vars

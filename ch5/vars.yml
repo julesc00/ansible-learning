@@ -1,0 +1,6 @@
+---
+vars:
+  proxy_vars:
+    http_proxy: http://example-proxy:80/
+    https_proxy: https://example-proxy:443/
+    # [etc...]
