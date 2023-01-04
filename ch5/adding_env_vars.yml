@@ -1,13 +1,32 @@
 ---
 - hosts: all
 
+  # If a proxy needs to be set system-wide (as is the case behind many corporate firewalls),
+  # do so using global '/etc/environment' file:
+  # In the 'vars' section of the playbook (set to 'absent' to disable proxy)
   vars:
+    proxy_state: present
+
     proxy_vars:
       http_proxy: http://example-proxy:80/
       https_proxy: https://example-proxy:443/
       # [etc...]
 
   tasks:
+    - name: "Configure the proxy."
+      lineinfile:
+        dest: /etc/environment
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: "{{ proxy_state }}"
+      with_items:
+        - regexp: "^http_proxy="
+          line: "http_proxy=http://example-proxy:80/"
+        - regexp: "^https_proxy="
+          line: "https_proxy=https://example-proxy:443/"
+        - regexp: "^ftp_proxy="
+          line: "ftp_proxy=http://example-proxy:80/"
+
     - name: "Add an environment variable to the remote user's shell."
       lineinfile: "dest=~/.bash_profile regexp=^ENV_VAR= line=ENV_VAR=value"
 
@@ -26,9 +45,9 @@
     - name: "Download a file, using example-proxy as a proxy."
       get_url: url=http://www.example.com/file.tar.gz dest=~/Downloads/
       environment:
-        http_proxy: http://example-proxy:80/
+        http_proxy: http://example-proxy:80
 
     # Using variables
-    - name: "Same as the task above for downloading a file, using a proxy."
+    - name: "Repeated, same as the task above for downloading a file, using a proxy."
       get_url: url=http://www.example.com/file.tar.gz dest=~/Download/
       environment: proxy_vars
